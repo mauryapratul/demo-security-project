@@ -13,10 +13,14 @@ public class User {
     private String password;
 
     public String getUsername() {
-       return this.username = username;
+       return this.username;
     }
 
     public String getPassword() {
-        return this.password= password;
+        return  this.password;
+    }
+
+    public void setPassword(String password){
+        this.password= password;
     }
 }
