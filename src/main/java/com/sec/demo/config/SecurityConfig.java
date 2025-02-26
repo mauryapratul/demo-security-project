@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +27,9 @@ public class SecurityConfig {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtFilter jwtFilter;
     @Bean
     public AuthenticationProvider authProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -41,7 +45,8 @@ public class SecurityConfig {
                 .requestMatchers("register","login").permitAll()
                 .anyRequest().authenticated());
         http.httpBasic(Customizer.withDefaults());
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
